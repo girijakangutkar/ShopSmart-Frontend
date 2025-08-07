@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
-import { debounce, filter } from "lodash";
+import { debounce } from "lodash";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
