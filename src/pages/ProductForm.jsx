@@ -1,5 +1,6 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const ProductForm = () => {
   const [product, setProduct] = useState({
@@ -13,6 +14,42 @@ const ProductForm = () => {
   });
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const { productId } = useParams();
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!productId) return;
+
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(
+          `http://localhost:3000/wareHouse/getProduct/${productId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = res.data.product;
+
+        setProduct({
+          productName: data.productName,
+          productCompany: data.productCompany,
+          productPrice: data.productPrice,
+          AvailableOptions: data.AvailableOptions.join(", "),
+          category: data.category,
+          productImage: null,
+          stock: data.stock,
+        });
+      } catch (error) {
+        console.error("Error fetching product", error);
+        setErrMsg("Failed to load product data");
+      }
+    };
+
+    fetchProduct();
+  }, [productId]);
 
   const handleChange = (e) => {
     try {
@@ -30,6 +67,12 @@ const ProductForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrMsg("");
+
+    const endPoint = productId
+      ? `http://localhost:3000/wareHouse/editProduct/${productId}`
+      : `http://localhost:3000/wareHouse/addProduct`;
+
+    const method = productId ? "put" : "post";
 
     if (
       !product.productName ||
@@ -54,16 +97,12 @@ const ProductForm = () => {
 
       const token = localStorage.getItem("token");
 
-      const info = await axios.post(
-        "http://localhost:3000/wareHouse/addProduct",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const info = await axios[method](endPoint, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       console.log("Product added", info.data);
       alert("Product added successfully!");
@@ -113,7 +152,7 @@ const ProductForm = () => {
         <input
           name="productName"
           type="text"
-          value={product.productName}
+          value={product.productName ?? ""}
           onChange={handleChange}
           className="border border-[#ccc] w-full shadow-md p-1.5 text-md text-gray-700 text-sm mb-2"
           placeholder="Product name"
@@ -129,7 +168,7 @@ const ProductForm = () => {
         <input
           name="productCompany"
           type="text"
-          value={product.productCompany}
+          value={product.productCompany ?? ""}
           onChange={handleChange}
           className="border border-[#ccc] w-full shadow-md p-1.5 text-md text-gray-700 text-sm mb-2"
           placeholder="Product company"
@@ -144,7 +183,7 @@ const ProductForm = () => {
         <input
           name="productPrice"
           type="number"
-          value={product.productPrice}
+          value={product.productPrice ?? ""}
           onChange={handleChange}
           className="border border-[#ccc] w-full shadow-md p-1.5 text-md text-gray-700 text-sm mb-2"
           placeholder="Product price"
@@ -160,7 +199,7 @@ const ProductForm = () => {
         <input
           name="AvailableOptions"
           type="text"
-          value={product.AvailableOptions}
+          value={product.AvailableOptions ?? ""}
           onChange={handleChange}
           className="border border-[#ccc] w-full shadow-md p-1.5 text-md text-gray-700 text-sm mb-2"
           placeholder="Product options"
@@ -175,7 +214,7 @@ const ProductForm = () => {
         <input
           name="stock"
           type="number"
-          value={product.stock}
+          value={product.stock ?? ""}
           onChange={handleChange}
           className="border border-[#ccc] w-full shadow-md p-1.5 text-md text-gray-700 text-sm mb-2"
           placeholder="Stock"
@@ -190,7 +229,7 @@ const ProductForm = () => {
         <input
           name="category"
           type="text"
-          value={product.category}
+          value={product.category ?? ""}
           onChange={handleChange}
           className="border border-[#ccc] w-full shadow-md p-1.5 text-md text-gray-700 text-sm mb-2"
           placeholder="Product Category"

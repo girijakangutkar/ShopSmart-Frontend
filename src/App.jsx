@@ -9,6 +9,9 @@ import ForgotPassword from "./authentication/ForgotPassword";
 import ResetPassword from "./authentication/ResetPassword";
 import Cart from "./pages/Cart";
 import ProductForm from "./pages/ProductForm";
+import OrderHistory from "./pages/OrderHistory";
+import UserProfile from "./pages/UserProfile";
+import ProductDetails from "./pages/ProductDetails";
 
 const App = () => {
   return (
@@ -23,6 +26,10 @@ const App = () => {
         <Route path="/api/resetPassword" element={<ResetPassword />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/addProduct" element={<ProductForm />} />
+        <Route path="/orderHistory" element={<OrderHistory />} />
+        <Route path="/userProfile" element={<UserProfile />} />
+        <Route path="/editProduct/:productId" element={<ProductForm />} />
+        <Route path="/productDetails/:productId" element={<ProductDetails />} />
       </Routes>
     </div>
   );

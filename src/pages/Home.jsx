@@ -1,6 +1,8 @@
 import axios from "axios";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { debounce } from "lodash";
+import { authContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -11,7 +13,8 @@ const Home = () => {
     maxPrice: "",
     sortOrder: "asc",
   });
-
+  const { user } = useContext(authContext);
+  const navigate = useNavigate();
   // useEffect(() => {
   //   fetchProducts();
   // }, []);
@@ -26,7 +29,7 @@ const Home = () => {
       const queryParams = new URLSearchParams();
 
       Object.entries(filters).forEach(([key, value]) => {
-        if (value) queryParams.append(key, value);
+        if (value !== "") queryParams.append(key, value);
       });
 
       const response = await axios.get(
@@ -81,9 +84,26 @@ const Home = () => {
     }
   };
 
+  const handleDeleteProduct = async (productId) => {
+    try {
+      await axios.delete(
+        `http://localhost:3000/wareHouse/deleteProduct/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      fetchProducts();
+      console.log("Deleted successfully");
+    } catch (error) {
+      console.log("Something went wrong while deleting product");
+    }
+  };
+
   return (
-    <div className="flex flex-row mt-[3%]">
-      <div className="w-[20%]">
+    <div className="flex flex-row mt-[3%] p-10 pt-0">
+      <div className=" w-[20%] mt-[6%] sm:mt-[3%] md:mt-[3%] flex flex-col items-center">
         <input
           type="text"
           placeholder="Search by name"
@@ -91,14 +111,14 @@ const Home = () => {
           onChange={(e) =>
             setFilters((prev) => ({ ...prev, name: e.target.value }))
           }
-          className="border p-2 mr-2"
+          className="border-1 border-[#ccc] p-2 mb-4 w-[96%] text-gray-600"
         />
         <select
           value={filters.category}
           onChange={(e) =>
             setFilters((prev) => ({ ...prev, category: e.target.value }))
           }
-          className="border p-2 mr-2"
+          className="border-1 border-[#ccc] p-2 mb-4  w-[96%] text-gray-600"
         >
           <option value="">All Categories</option>
           <option value="electronics">Electronics</option>
@@ -112,7 +132,7 @@ const Home = () => {
           onChange={(e) =>
             setFilters((prev) => ({ ...prev, minPrice: e.target.value }))
           }
-          className="border p-2 mr-2"
+          className="border-1 border-[#ccc] p-2 mb-4  w-[96%] text-gray-600"
         />
         <input
           value={filters.maxPrice}
@@ -121,25 +141,26 @@ const Home = () => {
           onChange={(e) =>
             setFilters((prev) => ({ ...prev, maxPrice: e.target.value }))
           }
-          className="border p-2 mr-2"
+          className="border-1 border-[#ccc] p-2 mb-4  w-[96%] text-gray-600"
         />
         <select
           value={filters.sortOrder}
           onChange={(e) =>
             setFilters((prev) => ({ ...prev, sortOrder: e.target.value }))
           }
-          className="border p-2"
+          className="border-1 border-[#ccc] p-2 mb-4 w-[96%] text-gray-600"
         >
           <option value="asc">Price: Low to High</option>
           <option value="desc">Price: High to Low</option>
         </select>
       </div>
-      <div className="p-6 w-[80%]">
+      <div className="p-15 pt-10 w-[80%] overflow-y-auto max-h-[700px]">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
           {products.map((item) => (
             <div
               key={item._id}
               className="bg-white border border-[#ccc] shadow p-4 hover:shadow-lg transition"
+              onClick={() => navigate(`/productDetails/${item._id}`)}
             >
               <img
                 src={item.productImage}
@@ -153,20 +174,41 @@ const Home = () => {
               <p className="text-xs text-gray-500 mt-1">
                 {item.productCompany}
               </p>
-              <div className="flex flex-row w-full justify-between">
-                <button
-                  className="mt-2 px-4 py-2 bg-slate-500 text-sm text-white rounded hover:bg-blue-600"
-                  onClick={() => handleCart(item._id)}
-                >
-                  Add to cart
-                </button>
-                <button
-                  className="mt-2 ml-2 px-4 py-2 bg-slate-600 text-sm text-white rounded hover:bg-green-600"
-                  onClick={() => handleOrder(item._id)}
-                >
-                  Buy now
-                </button>
-              </div>
+              {user && user.role == "user" ? (
+                <div className="flex flex-row w-full justify-between">
+                  <button
+                    className="mt-2 px-4 py-2 bg-slate-500 text-sm text-white rounded hover:bg-blue-600"
+                    onClick={() => handleCart(item._id)}
+                    type="button"
+                  >
+                    Add to cart
+                  </button>
+                  <button
+                    className="mt-2 ml-2 px-4 py-2 bg-slate-600 text-sm text-white rounded hover:bg-green-600"
+                    onClick={() => handleOrder(item._id)}
+                    type="button"
+                  >
+                    Buy now
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-row w-full justify-between">
+                  <button
+                    type="button"
+                    onClick={() => navigate(`editProduct/${item._id}`)}
+                    className="mt-2 ml-2 px-4 py-2 bg-slate-600 text-sm text-white rounded hover:bg-green-600"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteProduct(item._id)}
+                    className="mt-2 ml-2 px-4 py-2 bg-slate-600 text-sm text-white rounded hover:bg-green-600"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>

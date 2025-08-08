@@ -2,6 +2,9 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { authContext } from "../context/AuthContext";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [data, setData] = useState({
@@ -11,6 +14,7 @@ const Login = () => {
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setUser, fetchUserInfo } = useContext(authContext);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +24,7 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -29,9 +33,13 @@ const Login = () => {
         password: data.password,
       });
       const { accessToken } = info.data;
-
-      // Store the token in local storage
       localStorage.setItem("token", accessToken);
+
+      const decoded = jwtDecode(accessToken);
+      setUser({ userId: decoded.userId, role: decoded.role });
+
+      await fetchUserInfo(decoded.userId);
+
       navigate("/");
       console.log("Login success", info);
     } catch (error) {
@@ -51,7 +59,7 @@ const Login = () => {
   return (
     <div>
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleLogin}
         className="flex flex-col border-1 border-slate-400 shadow-sm p-6 absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] justify-center items-center text-left align-left w-[80%] sm:[80%] md:w-[40%] xl:[w-25%] 2xl:w-[25%]"
       >
         <h3 className="font-semibold text-[18px] text-gray-600 text-left w-full mb-3">
