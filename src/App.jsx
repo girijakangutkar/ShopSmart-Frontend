@@ -12,6 +12,9 @@ import ProductForm from "./pages/ProductForm";
 import OrderHistory from "./pages/OrderHistory";
 import UserProfile from "./pages/UserProfile";
 import ProductDetails from "./pages/ProductDetails";
+import WishList from "./pages/WishList";
+import NotFound from "./components/NotFound";
+import PaymentCheckout from "./pages/PaymentCheckout";
 
 const App = () => {
   return (
@@ -30,6 +33,9 @@ const App = () => {
         <Route path="/userProfile" element={<UserProfile />} />
         <Route path="/editProduct/:productId" element={<ProductForm />} />
         <Route path="/productDetails/:productId" element={<ProductDetails />} />
+        <Route path="/wishList" element={<WishList />} />
+        <Route path="*" element={<NotFound />} />
+        <Route path="/paymentCheckout" element={<PaymentCheckout />} />
       </Routes>
     </div>
   );

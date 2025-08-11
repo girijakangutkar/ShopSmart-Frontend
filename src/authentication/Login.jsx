@@ -15,6 +15,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { setUser, fetchUserInfo } = useContext(authContext);
+  const API = import.meta.env.VITE_BACKEND_API;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +29,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const info = await axios.post("http://localhost:3000/api/login", {
+      const info = await axios.post(`${API}/api/login`, {
         email: data.email,
         password: data.password,
       });
@@ -53,7 +54,38 @@ const Login = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex flex-col border-1 border-slate-400 shadow-sm p-6 absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] justify-center items-center text-left align-left w-[80%] sm:[80%] md:w-[40%] xl:w-[25%] 2xl:w-[25%]">
+        {/* Title Skeleton */}
+        <div className="h-6 w-3/4 mb-4 bg-gray-200 rounded animate-pulse"></div>
+
+        {/* Error Message Slot (empty but reserved space) */}
+        <div className="h-4 w-full mb-2"></div>
+
+        {/* Email Label & Input Skeleton */}
+        <div className="h-4 w-1/4 bg-gray-200 rounded animate-pulse mb-1"></div>
+        <div className="h-8 w-full bg-gray-100 rounded animate-pulse mb-3"></div>
+
+        {/* Password Label & Input Skeleton */}
+        <div className="h-4 w-1/3 bg-gray-200 rounded animate-pulse mb-1"></div>
+        <div className="h-8 w-full bg-gray-100 rounded animate-pulse mb-2"></div>
+
+        {/* Forgot Password Link Skeleton */}
+        <div className="h-4 w-1/2 bg-gray-200 rounded animate-pulse self-end mb-4"></div>
+
+        {/* Login Button Skeleton */}
+        <div className="h-10 w-full bg-gray-300 rounded animate-pulse mb-4"></div>
+
+        {/* Divider Skeleton */}
+        <div className="h-px w-1/2 bg-gray-200 my-2"></div>
+
+        {/* Signup Prompt Skeleton */}
+        <div className="flex space-x-1">
+          <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -108,7 +140,7 @@ const Login = () => {
         </div>
         <button
           type="submit"
-          className="bg-green-500 w-full m-4 p-2 shadow-md text-white font-bold text-md"
+          className="bg-slate-800 w-full m-4 p-2 shadow-md text-white font-bold text-md"
         >
           Login
         </button>

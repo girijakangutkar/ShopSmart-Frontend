@@ -6,15 +6,15 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const API = import.meta.env.VITE_BACKEND_API;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const info = await axios.post(
-        "http://localhost:3000/api/forgotPassword",
-        { email: email }
-      );
+      const info = await axios.post(`${API}/api/forgotPassword`, {
+        email: email,
+      });
       console.log("Reset password link will be sent", info);
     } catch (error) {
       const errorMsg =
@@ -59,7 +59,7 @@ const ForgotPassword = () => {
         />
         <button
           type="submit"
-          className="bg-green-500 w-full m-4 p-2 shadow-md text-white font-bold text-md"
+          className="bg-slate-800 w-full m-4 p-2 shadow-md text-white font-bold text-md"
         >
           Send reset link
         </button>

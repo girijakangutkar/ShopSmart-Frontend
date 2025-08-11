@@ -1,13 +1,15 @@
 import axios from "axios";
-import { Star } from "lucide-react";
+import { ArrowLeft, Star } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ProductDetails = () => {
   const [productData, setProductData] = useState(null);
   const { productId } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const API = import.meta.env.VITE_BACKEND_API;
 
   useEffect(() => {
     if (productId) {
@@ -19,7 +21,7 @@ const ProductDetails = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/wareHouse/productDetails/${productId}`,
+        `${API}/wareHouse/productDetails/${productId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -67,16 +69,23 @@ const ProductDetails = () => {
 
   return (
     <div className="mt-[5%] max-w-6xl mx-auto p-4">
+      <button
+        onClick={() => navigate("/")}
+        className="flex flex-row gap-3 mb-4 text-bold text-gray-800"
+      >
+        <ArrowLeft /> Back
+      </button>
       {productData ? (
         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
           {/* Product Main Info */}
           <div className="flex flex-col lg:flex-row">
             {/* Product Image */}
-            <div className="lg:w-1/2 p-6">
+            <div className="lg:w-1/2 p-6 items-center content-center align-center self-center">
               <img
                 src={productData.productImage}
                 alt={productData.productName}
                 className="w-full h-auto object-cover rounded-lg shadow-md"
+                style={{ width: "400px", height: "300px" }}
               />
             </div>
 
@@ -112,9 +121,7 @@ const ProductDetails = () => {
                       productData.stock > 0 ? "text-green-600" : "text-red-600"
                     }`}
                   >
-                    {productData.stock > 0
-                      ? `${productData.stock} available`
-                      : "Out of Stock"}
+                    {productData.stock > 0 ? `Available` : "Out of Stock"}
                   </span>
                 </div>
 

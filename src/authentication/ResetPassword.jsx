@@ -7,6 +7,7 @@ const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const API = import.meta.env.VITE_BACKEND_API;
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -17,7 +18,7 @@ const ResetPassword = () => {
     setLoading(true);
     try {
       const processChange = await axios.put(
-        `http://localhost:3000/api/resetPassword?token=${resetToken}`,
+        `${API}/api/resetPassword?token=${resetToken}`,
         { newPassword: newPassword }
       );
       console.log("Password reset success", processChange);
@@ -64,7 +65,7 @@ const ResetPassword = () => {
         />
         <button
           type="submit"
-          className="bg-green-500 w-full m-4 p-2 shadow-md text-white font-bold text-md"
+          className="bg-slate-800 w-full m-4 p-2 shadow-md text-white font-bold text-md"
         >
           Reset password
         </button>

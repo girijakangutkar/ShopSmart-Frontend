@@ -11,6 +11,7 @@ const Signup = () => {
   });
   const [errMsg, setErrMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const API = import.meta.env.VITE_BACKEND_API;
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -31,15 +32,11 @@ const Signup = () => {
     formData.append("profilePhoto", data.profilePhoto);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/signup",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`${API}/api/signup`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       console.log("Signup success", response.data);
     } catch (error) {
       const errorMsg =
@@ -52,7 +49,46 @@ const Signup = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex flex-col border-1 border-slate-400 shadow-sm p-6 absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%] justify-center items-center text-left align-left w-[80%] sm:w-[80%] md:w-[40%] xl:w-[25%] 2xl:w-[25%]">
+        {/* Title Skeleton */}
+        <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse mb-4"></div>
+
+        {/* Error Message Slot (empty but reserved space) */}
+        <div className="h-4 w-full mb-2"></div>
+
+        {/* Name Field */}
+        <div className="h-4 w-1/4 bg-gray-200 rounded animate-pulse mb-1"></div>
+        <div className="h-8 w-full bg-gray-100 rounded animate-pulse mb-3"></div>
+
+        {/* Email Field */}
+        <div className="h-4 w-1/4 bg-gray-200 rounded animate-pulse mb-1"></div>
+        <div className="h-8 w-full bg-gray-100 rounded animate-pulse mb-3"></div>
+
+        {/* Password Field */}
+        <div className="h-4 w-1/3 bg-gray-200 rounded animate-pulse mb-1"></div>
+        <div className="h-8 w-full bg-gray-100 rounded animate-pulse mb-3"></div>
+
+        {/* Profile Photo Upload */}
+        <div className="h-4 w-1/2 bg-gray-200 rounded animate-pulse mb-1"></div>
+        <div className="h-8 w-full bg-gray-100 rounded animate-pulse mb-4 flex items-center justify-between px-2">
+          <div className="h-4 w-2/3 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-6 w-1/4 bg-gray-300 rounded animate-pulse"></div>
+        </div>
+
+        {/* Signup Button Skeleton */}
+        <div className="h-10 w-full bg-gray-300 rounded animate-pulse mb-4"></div>
+
+        {/* Divider */}
+        <div className="h-px w-1/2 bg-gray-200 my-2"></div>
+
+        {/* Login Prompt Skeleton */}
+        <div className="flex space-x-1">
+          <div className="h-4 w-40 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-4 w-10 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -125,7 +161,7 @@ const Signup = () => {
         />
         <button
           type="submit"
-          className="bg-green-500 w-full m-4 p-2 shadow-md text-white font-bold text-md"
+          className="bg-slate-800 w-full m-4 p-2 shadow-md text-white font-bold text-md"
         >
           Signup
         </button>

@@ -2,10 +2,21 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Trash2, ShoppingCart, Plus, Minus, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { btnContext } from "../context/ButtonContext";
+import PaymentCheckout from "./PaymentCheckout";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
+  const {
+    showCheckout,
+    selectedProduct,
+    handleBuyNow,
+    handleOrderSuccess,
+    handleCloseCheckout,
+  } = useContext(btnContext);
+  const API = import.meta.env.VITE_BACKEND_API;
 
   useEffect(() => {
     fetchCart();
@@ -13,7 +24,7 @@ const Cart = () => {
 
   const fetchCart = async () => {
     try {
-      const info = await axios.get("http://localhost:3000/myInfo/cart", {
+      const info = await axios.get(`${API}/myInfo/cart`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -93,7 +104,10 @@ const Cart = () => {
             Looks like you haven't added any items to your cart yet. Start
             shopping to fill it up!
           </p>
-          <button className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+          <button
+            onClick={() => navigate("/")}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+          >
             <ShoppingBag className="w-5 h-5" />
             Continue Shopping
           </button>
@@ -231,7 +245,13 @@ const Cart = () => {
               </p>
             </div>
 
-            <button className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 whitespace-nowrap">
+            <button
+              // onClick={(e) => {
+              //   e.stopPropagation();
+              //   handleBuyNow(validCartItems);
+              // }}
+              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 whitespace-nowrap"
+            >
               <ShoppingBag className="w-5 h-5" />
               Proceed to Checkout
             </button>
@@ -250,6 +270,14 @@ const Cart = () => {
           ← Continue Shopping
         </button>
       </div>
+      {showCheckout && selectedProduct && (
+        <PaymentCheckout
+          productId={selectedProduct._id}
+          productDetails={selectedProduct}
+          onClose={handleCloseCheckout}
+          onSuccess={handleOrderSuccess}
+        />
+      )}
     </div>
   );
 };

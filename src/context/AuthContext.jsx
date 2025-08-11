@@ -7,6 +7,7 @@ export const authContext = createContext(null);
 const AuthContext = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const API = import.meta.env.VITE_BACKEND_API;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -24,12 +25,9 @@ const AuthContext = ({ children }) => {
   const fetchUserInfo = async (userId) => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/user/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.get(`${API}/api/user/${userId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       console.log("Fetched user:", response.data.user);
 
       setUser((prev) => ({ ...prev, ...response.data.user }));
