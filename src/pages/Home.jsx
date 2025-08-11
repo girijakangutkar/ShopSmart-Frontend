@@ -120,7 +120,8 @@ const Home = () => {
   };
 
   const requireAuth = (action, ...args) => {
-    if (!user) {
+    const token = localStorage.getItem("token");
+    if (!token) {
       alert("Please login to continue");
       navigate("/login");
       return;

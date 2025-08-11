@@ -55,6 +55,16 @@ const WishList = () => {
     }
   };
 
+  const requireAuth = (action, ...args) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to continue");
+      navigate("/login");
+      return;
+    }
+    action(...args);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 mt-[4%]">
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -131,7 +141,9 @@ const WishList = () => {
                     {user && user.role === "user" && (
                       <div className="col-span-2 flex justify-end space-x-2">
                         <button
-                          onClick={() => handleCart(item.product._id)}
+                          onClick={() =>
+                            requireAuth(handleCart, item.product._id)
+                          }
                           className="inline-flex items-center px-3 py-1.5 border border-slate-300 text-xs font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors duration-150"
                         >
                           <svg
