@@ -1,4 +1,4 @@
-﻿# E-commerce Shop Smart
+﻿# E-commerce Shop Smart [Frontend]
 
 ## Introduction
 
