@@ -59,7 +59,7 @@ const UserProfile = () => {
           },
         }
       );
-      console.log("Profile updated", response);
+      // console.log("Profile updated", response);
       setEditing(false);
 
       fetchUserData(userId);

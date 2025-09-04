@@ -32,7 +32,7 @@ const WishList = () => {
         },
       });
       setWishList(response.data.wishList);
-      console.log(response.data.wishList);
+      // console.log(response.data.wishList);
     } catch (error) {
       console.error("Something went wrong - wishList", error);
     }
@@ -46,7 +46,7 @@ const WishList = () => {
         },
       });
       fetchWishList();
-      console.log("Product removed from wishList");
+      // console.log("Product removed from wishList");
     } catch (error) {
       console.log(
         "Something went wrong while removing product from wishList",

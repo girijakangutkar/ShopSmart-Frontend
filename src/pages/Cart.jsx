@@ -30,7 +30,7 @@ const Cart = () => {
         },
       });
       setCart(info.data.cart);
-      console.log("Fetched cart", info);
+      // console.log("Fetched cart", info);
     } catch (error) {
       console.log("Something went wrong while fetching cart");
     }
@@ -46,7 +46,7 @@ const Cart = () => {
           },
         }
       );
-      console.log("Deleted", info);
+      // console.log("Deleted", info);
       setCart(info.data.cart);
     } catch (error) {
       console.log("Something went wrong while deleting cart item");

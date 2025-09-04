@@ -1,5 +1,11 @@
 import axios from "axios";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { debounce } from "lodash";
 import { authContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -36,6 +42,14 @@ const Home = () => {
     }
     return () => debounceFetch.cancel();
   }, [filters]);
+
+  const handleProductClick = useCallback(
+    (productId, productName) => {
+      // console.log("Clicking product:", productId, productName);
+      navigate(`/productDetails/${productId}`);
+    },
+    [navigate]
+  );
 
   const fetchWishList = async () => {
     try {
@@ -233,7 +247,9 @@ const Home = () => {
                     src={item.productImage}
                     alt={item.productName}
                     className="w-full h-48 object-cover cursor-pointer"
-                    onClick={() => navigate(`/productDetails/${item._id}`)}
+                    onClick={() =>
+                      handleProductClick(item._id, item.productName)
+                    }
                   />
 
                   {/* Wishlist Button - Absolute positioned */}
@@ -265,7 +281,7 @@ const Home = () => {
                 {/* Product Info - Clickable area */}
                 <div
                   className="p-4 cursor-pointer"
-                  onClick={() => navigate(`/productDetails/${item._id}`)}
+                  onClick={() => handleProductClick(item._id, item.productName)}
                 >
                   <h3 className="font-medium text-gray-900 line-clamp-2 mb-1">
                     {item.productName}

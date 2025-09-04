@@ -61,7 +61,7 @@ const ProductForm = () => {
         [name]: name === "productImage" ? files[0] : value,
       }));
     } catch (error) {
-      console.log("Error occurred in handleChange:", error);
+      console.error("Error occurred in handleChange:", error);
     }
   };
 
@@ -105,7 +105,7 @@ const ProductForm = () => {
         },
       });
 
-      console.log("Product added", info.data);
+      // console.log("Product added", info.data);
       alert("Product added successfully!");
 
       // Reset form with consistent data types

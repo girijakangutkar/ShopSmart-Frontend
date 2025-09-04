@@ -29,7 +29,7 @@ const ProductDetails = () => {
         }
       );
       setProductData(response.data.product);
-      console.log("Product detail fetched successfully", response);
+      // console.log("Product detail fetched successfully", response);
       setError(null);
     } catch (error) {
       console.log("Something went wrong", error);
